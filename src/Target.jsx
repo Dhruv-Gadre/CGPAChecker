@@ -138,10 +138,16 @@ const Target = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <div className={`flex justify-between items-center p-4 rounded-md ${darkMode ? 'bg-gray-600' : 'bg-white'} shadow-sm`}>
-                    <p>Required GPA for this semester:</p>
-                    <p className="text-xl font-bold text-purple-500">{requiredGpa.toFixed(2)}</p>
-                  </div>
+                  {requiredGpa > 10 ? (
+                    <div className={`p-4 rounded-md ${darkMode ? 'bg-red-900/20 border-red-700' : 'bg-red-50/60 border-red-200'} border`}>
+                      <p className="text-red-500 font-medium text-xl">⚠️ Oops! Looks like you won't be able to reach the target this time. Don't lose hope, work harder for the next semester!</p>
+                    </div>
+                  ) : (
+                    <div className={`flex justify-between items-center p-4 rounded-md ${darkMode ? 'bg-gray-600' : 'bg-white'} shadow-sm`}>
+                      <p>Required GPA for this semester:</p>
+                      <p className="text-xl font-bold text-purple-500">{requiredGpa.toFixed(2)}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
