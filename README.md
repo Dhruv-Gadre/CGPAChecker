@@ -11,6 +11,14 @@
 
 ---
 
+## 💪Made By💪
+
+🧑‍💻 [Dhruv Gadre](https://github.com/Dhruv-Gadre)
+
+👑 [Anuraag Shankar](https://github.com/anuraaggg)
+
+---
+
 ## 🚀 Features
 
 - 🎓 Calculate **CGPA** and **SGPA** with ease

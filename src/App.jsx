@@ -398,10 +398,11 @@ function CalculatorView() {
               <div className="cont">
                 <Link
                   to="/target"
-                  className={`p-2 rounded-full ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-indigo-700 hover:bg-indigo-800 text-white'} transition flex items-center gap-2`}
+                  className="p-2 rounded-full transition gap-2 bg-gradient-to-r from-indigo-700 to-purple-700 hover:to-indigo-400 hover:from-purple-600 text-white glow flex items-center justify-center"
+                  title="Click here to see the Target GPA Calculator"
                 >
                   <Calculator size={20} />
-                  <span>Calculate Target GPA</span>
+                  <div>Calculate required GPA to achive target</div>
                 </Link>
               </div>
             </div>
@@ -418,10 +419,10 @@ function CalculatorView() {
 
 function App() {
   return (
-      <Routes>
-        <Route path="/" element={<CalculatorView />} />
-        <Route path="/target" element={<Target />} />
-      </Routes>
+    <Routes>
+      <Route path="/" element={<CalculatorView />} />
+      <Route path="/target" element={<Target />} />
+    </Routes>
   );
 }
 
