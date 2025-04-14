@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, Trash2, Calculator, BookOpen, Award, Save, Moon, Sun, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Target from './Target';
 
-function App() {
+function CalculatorView() {
   const [subjects, setSubjects] = useState([]);
   const [previousCGPA, setPreviousCGPA] = useState('');
   const [previousCredits, setPreviousCredits] = useState('');
@@ -99,10 +101,8 @@ function App() {
     // Combine all data
     const wsData = [subjectHeaders, ...subjectData, ...summaryRows];
 
-    // Create worksheet and add to workbook
     const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-    // Set column widths
     const wscols = [
       { wch: 30 }, // Subject Name
       { wch: 10 }, // Credits
@@ -393,6 +393,18 @@ function App() {
                 </div>
               </div>
             )}
+            <br></br>
+            <div className="tar">
+              <div className="cont">
+                <Link
+                  to="/target"
+                  className={`p-2 rounded-full ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-indigo-700 hover:bg-indigo-800 text-white'} transition flex items-center gap-2`}
+                >
+                  <Calculator size={20} />
+                  <span>Calculate Target GPA</span>
+                </Link>
+              </div>
+            </div>
 
             <div className="mt-8 text-center text-sm opacity-75">
               Made with ❤️ for students | Data is saved locally in your browser and can be exported as Excel
@@ -401,6 +413,15 @@ function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+      <Routes>
+        <Route path="/" element={<CalculatorView />} />
+        <Route path="/target" element={<Target />} />
+      </Routes>
   );
 }
 
