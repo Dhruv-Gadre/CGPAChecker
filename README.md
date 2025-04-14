@@ -31,12 +31,11 @@
 
 ## 🛠️ Tech Stack
 
-| Tech                | Description                         |
-| ------------------- | ----------------------------------- |
-| ⚛️ React JS         | Frontend Framework                  |
-| 💨 Tailwind CSS     | Styling and Responsive Design       |
-| 🔢 JavaScript       | Dynamic logic and data manipulation |
-| 🌐 Vercel / Netlify | Deployment platform (Optional)      |
+| Tech            | Description                   |
+| --------------- | ----------------------------- |
+| ⚛️ React JS     | Frontend Framework + Logic    |
+| 💨 Tailwind CSS | Styling and Responsive Design |
+| 🌐 Vercel       | Deployment platform           |
 
 ---
 
@@ -49,3 +48,30 @@ S = 10, A = 9, B = 8, C = 7, D = 6, E = 5, F = 0
 Formula:
 CGPA = Σ(Credit × Grade Point) / Σ(Credit)
 ```
+
+## 🌟 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+- 💡 Suggest a feature
+- 🐛 Report a bug
+- 🎨 Improve UI/UX
+- 📦 Add more grade systems (other colleges?)
+
+```bash
+# Create a new branch
+git checkout -b your-feature-name
+
+# Commit your changes
+git commit -m "Add: Your cool feature"
+
+# Push to GitHub
+git push origin your-feature-name
+```
+
+---
+
+## 🙌 Made For VITians
+
+This project was built with ❤️ for students at **VIT Chennai** and beyond.  
+Whether you're double-checking your GPA or just curious, this tool is here to help!
