@@ -31,7 +31,8 @@
 
 ## 📸 Preview
 
-![Preview Screenshot](./public/image.png)
+![Preview Screenshot](./public/img2.png)
+![Preview Screenshot](./public/img3.png)
 
 > Try it out 👉 [Click Here](https://cgpa-checker-ruby.vercel.app/)
 
