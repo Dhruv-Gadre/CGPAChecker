@@ -6,7 +6,6 @@
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![License](https://img.shields.io/github/license/yourusername/cgpa-checker?style=for-the-badge)
 
 </div>
 
@@ -24,7 +23,7 @@
 
 ## 📸 Preview
 
-![Preview Screenshot](https://your-screenshot-url.com/cgpa-checker-preview.png)
+![Preview Screenshot](./public/image.png)
 
 > Try it out 👉 [Live Demo](https://your-deployed-site.vercel.app)
 
