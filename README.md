@@ -25,7 +25,7 @@
 
 ![Preview Screenshot](./public/image.png)
 
-> Try it out 👉 [Live Demo](https://your-deployed-site.vercel.app)
+> Try it out 👉 [Click Here](https://cgpa-checker-ruby.vercel.app/)
 
 ---
 
