@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { PlusCircle, Trash2, Calculator, BookOpen, Award, Save, Moon, Sun } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PlusCircle, Trash2, Calculator, BookOpen, Award, Save, Moon, Sun, Download } from 'lucide-react';
+import * as XLSX from 'xlsx';
 
 function App() {
   const [subjects, setSubjects] = useState([]);
@@ -9,6 +10,8 @@ function App() {
   const [overallCGPA, setOverallCGPA] = useState(null);
   const [showTips, setShowTips] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [totalCredits, setTotalCredits] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   const gradePoints = {
     'S': 10,
@@ -40,23 +43,86 @@ function App() {
   const calculateGPA = () => {
     if (subjects.length === 0) return;
 
-    let totalCredits = 0;
-    let totalPoints = 0;
+    let credits = 0;
+    let points = 0;
 
     subjects.forEach(subject => {
-      totalCredits += subject.credits;
-      totalPoints += subject.credits * gradePoints[subject.grade];
+      credits += subject.credits;
+      points += subject.credits * gradePoints[subject.grade];
     });
 
-    const semesterGPA = totalPoints / totalCredits;
+    setTotalCredits(credits);
+    setTotalPoints(points);
+    const semesterGPA = points / credits;
     setCurrentGPA(semesterGPA);
 
     if (previousCGPA && previousCredits) {
       const prevCGPA = parseFloat(previousCGPA);
       const prevCredits = parseFloat(previousCredits);
-      const overall = (prevCGPA * prevCredits + semesterGPA * totalCredits) / (prevCredits + totalCredits);
+      const overall = (prevCGPA * prevCredits + semesterGPA * credits) / (prevCredits + credits);
       setOverallCGPA(overall);
     }
+  };
+
+  const downloadExcel = () => {
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+
+    // Create headers and data for subjects table
+    const subjectHeaders = ["Subject Name", "Credits", "Grade", "Grade Points", "Points Earned"];
+    const subjectData = subjects.map(subject => [
+      subject.name || "Unnamed Subject",
+      subject.credits,
+      subject.grade,
+      gradePoints[subject.grade],
+      subject.credits * gradePoints[subject.grade]
+    ]);
+
+    // Add summary rows
+    const summaryRows = [
+      ["", "", "", "", ""],
+      ["Summary", "", "", "", ""],
+      ["Total Credits", totalCredits, "", "", ""],
+      ["Total Points", totalPoints, "", "", ""],
+      ["Current Semester GPA", currentGPA ? currentGPA.toFixed(2) : "N/A", "", "", ""]
+    ];
+
+    // Add CGPA calculation if available
+    if (overallCGPA !== null) {
+      summaryRows.push(["", "", "", "", ""]);
+      summaryRows.push(["CGPA Calculation", "", "", "", ""]);
+      summaryRows.push(["Previous CGPA", previousCGPA, "", "", ""]);
+      summaryRows.push(["Previous Credits", previousCredits, "", "", ""]);
+      summaryRows.push(["Overall CGPA", overallCGPA.toFixed(2), "", "", ""]);
+    }
+
+    // Combine all data
+    const wsData = [subjectHeaders, ...subjectData, ...summaryRows];
+
+    // Create worksheet and add to workbook
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Set column widths
+    const wscols = [
+      { wch: 30 }, // Subject Name
+      { wch: 10 }, // Credits
+      { wch: 10 }, // Grade
+      { wch: 15 }, // Grade Points
+      { wch: 15 }  // Points Earned
+    ];
+    ws['!cols'] = wscols;
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "CGPA Calculation");
+
+    // Generate file name with date
+    const date = new Date();
+    const fileName = `CGPA_Calculation_${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}.xlsx`;
+
+    // Write and download the file
+    XLSX.writeFile(wb, fileName);
+
+    showToast("Excel file downloaded successfully!");
   };
 
   const saveData = () => {
@@ -67,15 +133,17 @@ function App() {
     };
 
     localStorage.setItem('cgpaCalculatorData', JSON.stringify(data));
+    showToast("Data saved successfully!");
+  };
 
-    // Show a nice toast notification
+  const showToast = (message) => {
     const toast = document.createElement('div');
     toast.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded-md shadow-lg flex items-center gap-2 animate-fade-in';
     toast.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
       </svg>
-      <span>Data saved successfully!</span>
+      <span>${message}</span>
     `;
     document.body.appendChild(toast);
     setTimeout(() => {
@@ -94,13 +162,12 @@ function App() {
     }
   };
 
-  // Load data when component mounts
-  React.useEffect(() => {
+  useEffect(() => {
     loadData();
   }, []);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`overflow-x-hidden min-h-screen transition-colors duration-300 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       <style jsx global>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
@@ -117,7 +184,8 @@ function App() {
 
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className={`rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border`}>
-          {/* Header */}
+
+
           <div className={`p-6 ${darkMode ? 'bg-gray-700' : 'bg-indigo-600'} text-white`}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -166,12 +234,13 @@ function App() {
                 <li>Add all subjects from the current semester</li>
                 <li>S grade = 10 points, A grade = 9 points, and so on</li>
                 <li>Your data will be saved locally in this browser</li>
+                <li>You can download your results as an Excel file for record keeping</li>
               </ul>
             </div>
           )}
 
           <div className="p-6">
-            {/* Previous CGPA and Credits */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} transition`}>
                 <label className="block text-sm font-medium mb-1">
@@ -203,7 +272,8 @@ function App() {
               </div>
             </div>
 
-            {/* Subject Headers */}
+
+
             {subjects.length > 0 && (
               <div className={`grid grid-cols-12 gap-4 mb-2 text-sm font-medium px-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 <div className="col-span-5">Subject Name</div>
@@ -213,7 +283,7 @@ function App() {
               </div>
             )}
 
-            {/* Subjects List */}
+
             <div className="space-y-3 mb-6">
               {subjects.map((subject) => (
                 <div
@@ -268,7 +338,7 @@ function App() {
               ))}
             </div>
 
-            {/* Add Subject Button */}
+
             <button
               onClick={addSubject}
               className={`flex items-center gap-2 mb-6 py-2.5 px-4 rounded-lg transition ${darkMode ? 'bg-indigo-700 hover:bg-indigo-600 text-white' : 'bg-indigo-100 hover:bg-indigo-200 text-indigo-700'}`}
@@ -277,7 +347,7 @@ function App() {
               <span>Add Subject</span>
             </button>
 
-            {/* Calculate Button */}
+
             <button
               onClick={calculateGPA}
               disabled={subjects.length === 0}
@@ -290,13 +360,25 @@ function App() {
               <span className="font-medium">Calculate GPA</span>
             </button>
 
-            {/* Results */}
+
             {currentGPA !== null && (
               <div className={`mt-6 p-5 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-indigo-50'} border ${darkMode ? 'border-gray-600' : 'border-indigo-200'}`}>
-                <div className="flex items-center gap-3 mb-4">
-                  <Award size={26} className={`${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
-                  <h2 className="text-xl font-semibold">Results</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <Award size={26} className={`${darkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />
+                    <h2 className="text-xl font-semibold">Results</h2>
+                  </div>
+
+                  <button
+                    onClick={downloadExcel}
+                    className={`flex items-center gap-2 py-2 px-3 rounded-lg transition ${darkMode ? 'bg-emerald-700 hover:bg-emerald-600 text-white' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-700'
+                      }`}
+                  >
+                    <Download size={18} />
+                    <span>Export to Excel</span>
+                  </button>
                 </div>
+
                 <div className="space-y-3">
                   <div className={`flex justify-between items-center p-4 rounded-md ${darkMode ? 'bg-gray-600' : 'bg-white'} shadow-sm`}>
                     <p>Current Semester GPA:</p>
@@ -313,7 +395,7 @@ function App() {
             )}
 
             <div className="mt-8 text-center text-sm opacity-75">
-              Made with ❤️ for students | Data is saved locally in your browser
+              Made with ❤️ for students | Data is saved locally in your browser and can be exported as Excel
             </div>
           </div>
         </div>
