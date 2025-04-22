@@ -306,7 +306,7 @@ function CalculatorView() {
                       placeholder="Credits"
                       className={`w-full p-2 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition ${darkMode ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'bg-white border-gray-300'}`}
                       value={subject.credits || ''}
-                      onChange={(e) => updateSubject(subject.id, 'credits', parseInt(e.target.value) || 0)}
+                      onChange={(e) => updateSubject(subject.id, 'credits', parseFloat(e.target.value) || 0)}
                     />
                   </div>
                   <div className="col-span-3">
